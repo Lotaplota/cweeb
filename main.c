@@ -4,7 +4,7 @@
 
 int main(void)
 {
-    FILE * file = fopen("content.txt", "w");
+    FILE * fw = fopen("content.txt", "w");
 
     // Getting the arguments
     char url[64] = "";
@@ -12,10 +12,13 @@ int main(void)
     scanf("%s", url);
 
     // Appending the desired url to the curl command
-    char argument[128] = "curl -o test.txt http://";
+    char argument[128] = "curl -o content.txt https://"; // won't run without the s in https FOR SOME REASON
     strcat(argument, url);
 
     system(argument);
 
-    fclose(file);
+    char img[1024];
+    fscanf(fw, "%*[^flex]flex %s items-", img);
+    
+    fclose(fw);
 }
