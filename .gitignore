@@ -56,3 +56,6 @@ dkms.conf
 
 # .txt test files
 *.txt
+
+# vscode configs
+*.vscode/
