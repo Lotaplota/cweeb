@@ -6,21 +6,36 @@ int main(void)
 {
     FILE * text = fopen("text.txt", "r");
 
-    char buffer[100];
+    // Creating buffers for the current line and the selected substring
+    char line[100];
     char select[100];
 
-    while (fgets(buffer, sizeof(buffer), text) != NULL)
+    while (fgets(line, sizeof(line), text) != NULL)
     {
-        printf(buffer); // DONKEY
-        char * ptr = strstr(buffer, "<");
-        if (ptr == NULL) 
+        // Setting the substring "<<" to be found
+        char * substr = "<<";
+        char * pos = strstr(line, substr);
+
+        if (pos == NULL) 
         {
-            printf("! text not found\n");
-        } else {
-            printf(ptr); // DONKEY
+            printf("Substring \"%s\" not found\n", substr);
         }
-        // strcpy(buffer, select);
-        // printf("selected text: %s", select); // DONKEY
+        else
+        {
+            printf("Found: ");
+
+            // Should start printing from the i-th character
+            // i should be the length of the substring minus 1 for the string terminator \0
+            int i = sizeof(substr) - 1;
+
+            // Prints while the current character is not the chosen terminator
+            while (pos[i] != '>')
+            {
+                printf("%c ", pos[i]);
+                i++;
+            }
+            printf("\n");
+        }
     }
 
 }
