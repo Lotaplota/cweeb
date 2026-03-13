@@ -54,8 +54,9 @@ dkms.conf
 # debug information files
 *.dwo
 
-# .txt test files
+# test files
 *.txt
+*.png
 
 # vscode configs
 *.vscode/
