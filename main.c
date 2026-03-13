@@ -56,37 +56,27 @@ void getHtmlData()
     fclose(fw);
 }
 
-void empty(char * a)
+void empty(char * a, int size)
 {
-    int i = 0;
-    while (a[i] != "\0")
-    {
-        a[i] = NULL;
-    }
+    memset(a, 0, size * (sizeof a[0]) );
 }
 
 int main(void)
 {
     getHtmlData();
 
-    FILE * html = fopen64("content.txt", "r");
+    FILE * html = fopen("content.txt", "r");
+    FILE * links = fopen("links.txt", "w");
 
     char line[1024];
     char select[1024];
-    empty(select);
-
-    printf("%s\n", select); // DONKEY
 
     while (fgets(line, sizeof(line), html) != NULL)
     {
         // Finding the position of the substring
         char * pos = strstr(line, "ratio-content\" src=\"");
 
-        if (pos == NULL)
-        {
-            printf("Substring \"%s\" not found\n", "ratio-content\" src=\""); // DEBUG
-        }
-        else
+        if (pos != NULL)
         {
             printf("Found: ");
 
@@ -100,8 +90,17 @@ int main(void)
                 select[j] = pos[i];
                 i++; j++;
             }
-            printf("%s\n", select); // DEBUG
+
+            // Saving the extracted link found to the file
+            fprintf(links,"%s\n", select);
         }
+        else
+        {
+            printf("Error!\n");
+        }
+
+        // Emptying the array for the next link
+        empty(select, 1024);
     }
 }
 
