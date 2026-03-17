@@ -2,47 +2,35 @@
 #include <stdlib.h>
 #include <string.h>
 
-char * extractLink(FILE * file, char * dst, int dst_size, char * initiator, char terminator)
+int extractNthLink(FILE * file, char * dst, int dst_size, char * initiator, char terminator)
 {
     char line[1024];
-    char select[1024];
 
     while (fgets(line, sizeof(line), file) != NULL)
     {
-        char * start; char * end;
+        char * start = NULL; char * end = NULL;
+        
         // Finding the position of the substring
         start = strstr(line, initiator);
-
+        
         if (start)
         {
-            start += strlen(start); // maybe this will have to be +1(?)
-            end = strchr(start, terminator);
+            printf("found: %x\n", start); // DEBUG 2
+            start += strlen(initiator);
 
+            end = strchr(start, terminator);
+            
             if (end)
             {
                 *end = '\0';
-
+                
                 strncpy(dst, start, dst_size - 1);
                 dst[dst_size - 1] = '\0'; // CONTINUE
             }
-            // Should start printing from the i-th character
-            // i should be the length of the initiator substring minus 1 for the \0
-            int i = sizeof(initiator) - 1; int j = 0;
 
-            // Prints while the current character is not the chosen terminator
-            while (start[i] != terminator)
-            {
-                select[j] = start[i];
-                i++; j++;
-            }
+            return 0;
         }
-
-        // Emptying the array for the next link
-        empty(select, 1024);
     }
-
-    return select;
-    // ok... now how can i use this function in a loop without starting to read from the top of the file?
 }
 
 int main(void)
@@ -56,11 +44,15 @@ int main(void)
     // Setting up the array that will store the extracted links
     int linkAmount = 5;
     char links[linkAmount][64];
+    char init[] = "<a href=\"/chapters\0";
     
-    char buffer[1024];
-    while (fgets(buffer, sizeof(buffer), fr))
-    {
-        
-    }
+    
+    extractNthLink(fr, links[0], 64, init, '\"');
+    extractNthLink(fr, links[1], 64, init, '\"');
+    extractNthLink(fr, links[2], 64, init, '\"');
+    extractNthLink(fr, links[3], 64, init, '\"');
+    extractNthLink(fr, links[4], 64, init, '\"');
 
+    for (int i = 0; i < 5; i++) // DEBUG 1
+        printf("%i. %s\n", i + 1, links[i]); // DEBUG 1
 }
