@@ -58,8 +58,11 @@ int main(void)
     {
         extractNthLink(fr, links[i], LINK_LENGTH, init, '\"');
     }
-    for (int i = 0; i < linkAmount; i++)
-    {
-        printf("Option %i: %s\n", i + 1, links[i]);
-    }
+
+    int userChoice = 0;
+
+    printf("choose one: ");
+    scanf("%i", &userChoice);
+    
+    printf("%s", links[userChoice - 1]);
 }
