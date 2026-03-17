@@ -2,6 +2,8 @@
 #include <stdlib.h>
 #include <string.h>
 
+#define LINK_LENGTH 256
+
 int extractNthLink(FILE * file, char * dst, int dst_size, char * initiator, char terminator)
 {
     char line[1024];
@@ -13,19 +15,25 @@ int extractNthLink(FILE * file, char * dst, int dst_size, char * initiator, char
         // Finding the position of the substring
         start = strstr(line, initiator);
         
+        // If the initiator is found, searches for the terminator
         if (start)
         {
-            printf("found: %x\n", start); // DEBUG 2
             start += strlen(initiator);
 
             end = strchr(start, terminator);
             
+            // If the terminator is found, changes it to a \0 and copies the string to the destination
             if (end)
             {
                 *end = '\0';
+
+                // Setting up the start of the link that couldn't be obtained from the pages HTML and joining it to the part that could
+                char fullLink[LINK_LENGTH] = "https://tcbonepiecechapters.com/chapters";
+                strcat(fullLink, start);
                 
-                strncpy(dst, start, dst_size - 1);
-                dst[dst_size - 1] = '\0'; // CONTINUE
+                // Copying the full link to the destination
+                strncpy(dst, fullLink, dst_size - 1);
+                dst[dst_size - 1] = '\0';
             }
 
             return 0;
@@ -43,16 +51,15 @@ int main(void)
 
     // Setting up the array that will store the extracted links
     int linkAmount = 5;
-    char links[linkAmount][64];
+    char links[linkAmount][LINK_LENGTH];
     char init[] = "<a href=\"/chapters\0";
     
-    
-    extractNthLink(fr, links[0], 64, init, '\"');
-    extractNthLink(fr, links[1], 64, init, '\"');
-    extractNthLink(fr, links[2], 64, init, '\"');
-    extractNthLink(fr, links[3], 64, init, '\"');
-    extractNthLink(fr, links[4], 64, init, '\"');
-
-    for (int i = 0; i < 5; i++) // DEBUG 1
-        printf("%i. %s\n", i + 1, links[i]); // DEBUG 1
+    for (int i = 0; i < linkAmount; i++)
+    {
+        extractNthLink(fr, links[i], LINK_LENGTH, init, '\"');
+    }
+    for (int i = 0; i < linkAmount; i++)
+    {
+        printf("Option %i: %s\n", i + 1, links[i]);
+    }
 }

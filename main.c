@@ -4,17 +4,12 @@
 
 void getHtmlData()
 {
-    // FILE * fw = fopen("content.txt", "w");
+    FILE * fw = fopen("content.txt", "w");
 
-    // int linkAmount = 5;
-    // char links[linkAmount][64];
+    int linkAmount = 5;
+    char links[linkAmount][64];
     
-    // char buffer[1024];
-
-    // while (fgets(buffer, sizeof(buffer), ))
-    // {
-    //     /* code */
-    // }
+    char buffer[1024];
 
     // Requesting the URL from the user
     char url[64];
