@@ -2,14 +2,16 @@
 #include <stdlib.h>
 #include <string.h>
 
-#define LINK_AMOUNT 5
+#define CHAPTER_QT 5
+#define PAGE_QT 20
 #define MAX_LINK_SIZE 256
 
-void getHtmlData()
+void getHtmlData(char * url, char * filename)
 {
-    FILE * fw = fopen("main-page.txt", "w");
-    system("curl -o main-page.txt https://tcbonepiecechapters.com/mangas/5/one-piece");
-    fclose(fw);
+    char command[256];
+    sprintf(command, "%s %s %s", "curl -o", filename, url);
+
+    system(command);
 }
 
 int extractLink(FILE * file, char * dst, int dst_size, char * initiator, char terminator)
@@ -40,13 +42,9 @@ int extractLink(FILE * file, char * dst, int dst_size, char * initiator, char te
             if (end)
             {
                 *end = '\0';
-
-                // Setting up the start of the link that couldn't be obtained from the pages HTML and joining it to the part that could
-                char fullLink[MAX_LINK_SIZE] = "https://tcbonepiecechapters.com/chapters";
-                strcat(fullLink, start);
                 
                 // Copying the full link to the destination
-                strncpy(dst, fullLink, dst_size - 1);
+                strncpy(dst, start, dst_size - 1);
                 dst[dst_size - 1] = '\0';
             }
 
@@ -55,20 +53,22 @@ int extractLink(FILE * file, char * dst, int dst_size, char * initiator, char te
     }
 }
 
-int populateLinkArray(char arr[LINK_AMOUNT][MAX_LINK_SIZE])
+int populateLinkArray(char arr[][MAX_LINK_SIZE], int lineAmount, char * filename, char * initiator)
 {
-    FILE * mainPage = fopen("main-page.txt", "r");
+    FILE * pageData = fopen(filename, "r");
 
-    for (int i = 0; i < LINK_AMOUNT; i++)
+    for (int i = 0; i < lineAmount; i++)
     {
-        extractLink(mainPage, arr[i], MAX_LINK_SIZE, "<a href=\"/chapters", '\"');
+        extractLink(pageData, arr[i], MAX_LINK_SIZE, initiator, '\"');
     }
+
+    fclose(pageData);
 }
 
-void displayOptions(char arr[LINK_AMOUNT][MAX_LINK_SIZE])
+void displayOptions(char arr[CHAPTER_QT][MAX_LINK_SIZE])
 {
     printf("---- Chapter Options ----\n\n");
-    for (int i = 0; i < LINK_AMOUNT; i++)
+    for (int i = 0; i < CHAPTER_QT; i++)
     {
         printf("%i. %s\n", i, arr[i]);
     }
@@ -86,7 +86,12 @@ char getUserInput(char * prompt)
     return input;
 }
 
-void getImageLinks()
+void empty(char * a, int size)
+{
+    memset(a, 0, size * (sizeof a[0]));
+}
+
+void getImageLinks() // DEPRECATED
 {
     FILE * html = fopen("content.txt", "r");
     FILE * links = fopen("links.txt", "w");
@@ -123,12 +128,7 @@ void getImageLinks()
     fclose(html); fclose(links);
 }
 
-void empty(char * a, int size)
-{
-    memset(a, 0, size * (sizeof a[0]));
-}
-
-void downloadImages(char * chapterUrl)
+void downloadImages(char * chapterUrl) // i should change this function a little bit. make it a loop that scans through the links array and download the images
 {
     system("mkdir images");
     FILE * links = fopen("links.txt", "r");
@@ -149,17 +149,27 @@ void downloadImages(char * chapterUrl)
 
 int main(void)
 {
-    getHtmlData();
+    getHtmlData("https://tcbonepiecechapters.com/mangas/5/one-piece", "main-page.txt");
 
-    char links[LINK_AMOUNT][MAX_LINK_SIZE];
+    // Creating an array to store the URLs of the possible chapters
+    char chapterLinks[CHAPTER_QT][MAX_LINK_SIZE];
+    populateLinkArray(chapterLinks, CHAPTER_QT, "main-page.txt", "<a href=\"/chapters");
 
-    populateLinkArray(links);
-    displayOptions(links);
+    // Displaying the chapters to the user
+    displayOptions(chapterLinks);
 
+    // Getting the user's choice for the chapter number and building the url from it
     char input = getUserInput("Input the option's number: ");
-
     int choice = input - '0';
-    printf("you chose option %i: %s", choice , links[choice]); // DONKEY CONTINUE
+    char choiceUrl[MAX_LINK_SIZE];
+    sprintf(choiceUrl, "%s%s", "https://tcbonepiecechapters.com/chapters", chapterLinks[choice]);
 
-    // downloadImages();
+    // Using the built URL to get the chapter's HTML data
+    getHtmlData(choiceUrl, "chapter-page.txt");
+
+    // Creating an array to store the links to the chapter page's images
+    char imageLinks[PAGE_QT][MAX_LINK_SIZE];
+    populateLinkArray(imageLinks, PAGE_QT, "chapter-page.txt", "fixed-ratio-content\" src=\"");
+
+    // downloadImages(); // CONTINUE
 }
