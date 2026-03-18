@@ -12,7 +12,7 @@ void getHtmlData()
     fclose(fw);
 }
 
-int extractNthLink(FILE * file, char * dst, int dst_size, char * initiator, char terminator)
+int extractLink(FILE * file, char * dst, int dst_size, char * initiator, char terminator)
 {
     if (!file)
     {
@@ -61,8 +61,66 @@ int populateLinkArray(char arr[LINK_AMOUNT][MAX_LINK_SIZE])
 
     for (int i = 0; i < LINK_AMOUNT; i++)
     {
-        extractNthLink(mainPage, arr[i], MAX_LINK_SIZE, "<a href=\"/chapters", '\"');
+        extractLink(mainPage, arr[i], MAX_LINK_SIZE, "<a href=\"/chapters", '\"');
     }
+}
+
+void displayOptions(char arr[LINK_AMOUNT][MAX_LINK_SIZE])
+{
+    printf("---- Chapter Options ----\n\n");
+    for (int i = 0; i < LINK_AMOUNT; i++)
+    {
+        printf("%i. %s\n", i, arr[i]);
+    }
+
+    printf("\n");
+}
+
+char getUserInput(char * prompt)
+{
+    printf(prompt);
+
+    char input;
+    scanf("%c", &input);
+
+    return input;
+}
+
+void getImageLinks()
+{
+    FILE * html = fopen("content.txt", "r");
+    FILE * links = fopen("links.txt", "w");
+
+    char line[1024];
+    char select[1024];
+
+    while (fgets(line, sizeof(line), html) != NULL)
+    {
+        // Finding the position of the substring
+        char * pos = strstr(line, "ratio-content\" src=\"");
+
+        if (pos != NULL)
+        {
+            // Should start printing from the i-th character
+            // i should be the length of the initiator substring minus 1 for the \0
+            int i = sizeof("ratio-content\" src=\"") - 1; int j = 0;
+
+            // Prints while the current character is not the chosen terminator
+            while (pos[i] != '\"')
+            {
+                select[j] = pos[i];
+                i++; j++;
+            }
+
+            // Saving the extracted link found to the file
+            fprintf(links,"%s\n", select);
+        }
+
+        // Emptying the array for the next link
+        empty(select, 1024);
+    }
+
+    fclose(html); fclose(links);
 }
 
 void empty(char * a, int size)
@@ -70,7 +128,7 @@ void empty(char * a, int size)
     memset(a, 0, size * (sizeof a[0]));
 }
 
-void downloadImages()
+void downloadImages(char * chapterUrl)
 {
     system("mkdir images");
     FILE * links = fopen("links.txt", "r");
@@ -89,7 +147,6 @@ void downloadImages()
     }
 }
 
-
 int main(void)
 {
     getHtmlData();
@@ -97,6 +154,12 @@ int main(void)
     char links[LINK_AMOUNT][MAX_LINK_SIZE];
 
     populateLinkArray(links);
-    // separateLinks();
+    displayOptions(links);
+
+    char input = getUserInput("Input the option's number: ");
+
+    int choice = input - '0';
+    printf("you chose option %i: %s", choice , links[choice]); // DONKEY CONTINUE
+
     // downloadImages();
 }
