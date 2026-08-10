@@ -3,6 +3,15 @@
 #include <string.h>
 #include "functions.h"
 
+// ---- QUEUE FUNCTIONS
+Queue * CreateQueue(Link * start, int capacity) {
+    if (!start) { perror("Start address is null"); return; } // CONTINUE
+
+    Queue * q = (Queue *) malloc(sizeof(Queue));
+}
+// QUEUE FUNCTIONS ----
+
+// Gets the HTML data  of a page and saves it as [filename].txt
 void getHtmlData(char * url, char * filename)
 {
     char command[256];

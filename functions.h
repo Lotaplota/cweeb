@@ -5,6 +5,23 @@
 #define PAGE_QT 20
 #define MAX_LINK_SIZE 256
 
+typedef struct Link {
+    char * Url;
+    Link * Next;
+} Link;
+
+typedef struct {
+    Link * Start;
+    Link * End;
+    int Capacity;
+    int Size;
+} Queue;
+
+// ---- QUEUE FUNCTIONS
+Queue * CreateQueue(Link *, int);
+// QUEUE FUNCTIONS ----
+
+
 void getHtmlData(char *, char *);
 int extractLink(FILE *, char *, int, char *, char);
 int populateLinkArray(char arr[][MAX_LINK_SIZE], int, char *, char *);
