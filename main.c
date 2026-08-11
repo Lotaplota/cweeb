@@ -9,7 +9,7 @@ int main(void)
     getHtmlData("https://tcbonepiecechapters.com/mangas/5/one-piece", "main-page.txt");
 
     // QUEUE RESTRUCTURING
-    Queue * links = CreateQueue() // CONTINUE
+    Queue * links = CreateQueue()
 
     // Creating an array to store the URLs of the possible chapters
     char chapterLinks[CHAPTER_QT][MAX_LINK_SIZE];

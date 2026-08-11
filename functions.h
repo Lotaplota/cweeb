@@ -18,7 +18,7 @@ typedef struct {
 } Queue;
 
 // ---- QUEUE FUNCTIONS
-Queue * CreateQueue(Link *, int);
+Queue * CreateQueue(int);
 // QUEUE FUNCTIONS ----
 
 

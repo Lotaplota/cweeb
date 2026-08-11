@@ -4,10 +4,41 @@
 #include "functions.h"
 
 // ---- QUEUE FUNCTIONS
-Queue * CreateQueue(Link * start, int capacity) {
-    if (!start) { perror("Start address is null"); return; } // CONTINUE
-
+Queue * CreateQueue(int capacity) {
     Queue * q = (Queue *) malloc(sizeof(Queue));
+
+    q->Capacity = capacity;
+    q->Start = NULL;
+    q->End = NULL;
+    q->Size = 0;
+
+    return q;
+}
+
+Link * CreateLink(char * url) {
+    if (url[0] == '\0') { perror("String is empty"); return NULL }
+
+    Link * l = (Link *) malloc(sizeof(Link));
+
+    strcpy(l->Url, url);
+    l->Next = NULL;
+
+    return l; // CONTINUE
+}
+
+void AddLink(Queue * q, Link * l) {
+    if (q->Size == q->Capacity) { perror("Queue is full"); return; }
+    if (l == NULL) { perror("The link is null"); return; }
+
+    if (q->Start == NULL) {
+        q->Start == l;
+        q->End == l;
+    }
+    else {
+        q->End->Next = l;
+        q->End = l;
+    }
+
 }
 // QUEUE FUNCTIONS ----
 
