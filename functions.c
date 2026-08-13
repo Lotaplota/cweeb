@@ -13,6 +13,7 @@ Queue * CreateQueue(int capacity) {
     q->Size = 0;
 
     return q;
+    printf("create queue worked\n"); // DONKEY
 }
 
 Link * CreateLink(char * url) {
@@ -31,7 +32,7 @@ void AddLink(Queue * q, Link * l) {
     if (q->Size == q->Capacity) { perror("Queue is full"); return; }
     if (l == NULL) { perror("The link is null"); return; }
 
-    if (q->Start == NULL) {
+    if (q->Start == NULL) { // CONTINUE is this working?
         q->Start = l;
         q->End = l;
     }
@@ -41,6 +42,22 @@ void AddLink(Queue * q, Link * l) {
     }
 
     q->Size++;
+}
+
+void printQueue(Queue * q)
+{
+    if (q->Start = NULL) { perror("Queue is empty"); return; }
+
+    printf("---- Queue of capacity %i, currently with %i links:\n", q->Capacity, q->Size);
+
+    Link * cur = q->Start;
+    while(cur != NULL)
+    {
+        printf("%s\n", cur->Url);
+        cur = cur->Next;
+    }
+
+    printf("\n---- End of queue.\n");
 }
 // QUEUE FUNCTIONS ----
 
@@ -91,6 +108,53 @@ int extractLink(FILE * file, char * dst, int dst_size, char * initiator, char te
         }
     }
 }
+
+int extractLinkURLAndAppendToQueue(char * filename, Queue * q, char * initiator, char terminator)
+{
+    FILE * file = fopen(filename, "r");
+
+    if (!file)
+    {
+        printf("No html data to read from!\n");
+        return 1;
+    }
+    printf("read the file\n"); // DONKEY
+
+    char line[1024];
+    printf("created the line buffer\n"); // DONKEY
+
+    while (fgets(line, sizeof(line), file) != NULL)
+    {
+        char * start = NULL; char * end = NULL;
+        
+        // Finding the position of the substring
+        start = strstr(line, initiator);
+        
+        // If the initiator is found, searches for the terminator
+        if (start)
+        {
+            printf("loop started\n"); // DONKEY
+            start += strlen(initiator);
+
+            end = strchr(start, terminator);
+            
+            // If the terminator is found, changes it to a \0 and creates a link in the end of the queue
+            if (end)
+            {
+                printf("terminator was found\n"); // DONKEY
+                *end = '\0';
+                
+                // Adding a new link to the queue
+                printf("will add link\n"); // DONKEY
+                printf("link: %s\n", start); // DONKEY
+                AddLink(q, CreateLink(start));
+
+                if (q->Capacity == q->Size) { return 0;}
+            }
+        }
+    }
+}
+
 
 int populateLinkArray(char arr[][MAX_LINK_SIZE], int lineAmount, char * filename, char * initiator)
 {
