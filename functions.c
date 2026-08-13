@@ -46,7 +46,7 @@ void AddLink(Queue * q, Link * l) {
 
 void printQueue(Queue * q)
 {
-    if (q->Start = NULL) { perror("Queue is empty"); return; }
+    if (q->Start == NULL) { perror("Queue is empty"); return; }
 
     printf("---- Queue of capacity %i, currently with %i links:\n", q->Capacity, q->Size);
 
