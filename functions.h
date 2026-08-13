@@ -7,7 +7,7 @@
 
 typedef struct Link {
     char * Url;
-    Link * Next;
+    struct Link * Next;
 } Link;
 
 typedef struct {
@@ -19,6 +19,8 @@ typedef struct {
 
 // ---- QUEUE FUNCTIONS
 Queue * CreateQueue(int);
+Link * CreateLink(char * url);
+void AddLink(Queue * q, Link * l);
 // QUEUE FUNCTIONS ----
 
 

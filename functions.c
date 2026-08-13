@@ -16,14 +16,15 @@ Queue * CreateQueue(int capacity) {
 }
 
 Link * CreateLink(char * url) {
-    if (url[0] == '\0') { perror("String is empty"); return NULL }
+    if (url[0] == '\0') { perror("String is empty"); return NULL; }
 
-    Link * l = (Link *) malloc(sizeof(Link));
+    Link * l = (Link *) malloc(sizeof(Link)); // UNSAFE
+    l->Url = (char *) malloc(strlen(url) + 1); // UNSAFE
 
     strcpy(l->Url, url);
     l->Next = NULL;
 
-    return l; // CONTINUE
+    return l;
 }
 
 void AddLink(Queue * q, Link * l) {
@@ -31,14 +32,15 @@ void AddLink(Queue * q, Link * l) {
     if (l == NULL) { perror("The link is null"); return; }
 
     if (q->Start == NULL) {
-        q->Start == l;
-        q->End == l;
+        q->Start = l;
+        q->End = l;
     }
     else {
         q->End->Next = l;
         q->End = l;
     }
 
+    q->Size++;
 }
 // QUEUE FUNCTIONS ----
 
