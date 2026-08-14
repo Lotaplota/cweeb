@@ -11,20 +11,19 @@ int main(void)
     // QUEUE RESTRUCTURING
     Queue * links = CreateQueue(CHAPTER_QT);
 
-    printQueue(links);
     extractLinkURLAndAppendToQueue("main-page.txt", links, "<a href=\"/chapters", '\"');
-    printQueue(links);
+    printQueue(links); // DONKEY
 
-    /* ---- CHANGE IT TO QUEUE STRUCTURE
     // Displaying the chapters to the user
-    displayOptions(chapterLinks);
-
+    displayQueueOptions(links);
+    
+    /* ---- CHANGE IT TO QUEUE STRUCTURE
     // Getting the user's choice for the chapter number and building the url from it
     char input = getUserInput("Input the option's number: ");
     int choice = input - '0';
     char choiceUrl[MAX_LINK_SIZE];
     sprintf(choiceUrl, "%s%s", "https://tcbonepiecechapters.com/chapters", chapterLinks[choice]);
-
+    
     // Using the built URL to get the chapter's HTML data
     getHtmlData(choiceUrl, "chapter-page.txt");
 

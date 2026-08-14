@@ -29,7 +29,8 @@ void getHtmlData(char *, char *);
 int extractLink(FILE *, char *, int, char *, char);
 int populateLinkArray(char arr[][MAX_LINK_SIZE], int, char *, char *);
 int extractLinkURLAndAppendToQueue(char *, Queue *, char *, char);
-void displayOptions(char arr[CHAPTER_QT][MAX_LINK_SIZE]);
+void displayOptions(char arr[CHAPTER_QT][MAX_LINK_SIZE]); // DEPRECATED
+void displayQueueOptions(Queue * queue);
 char getUserInput(char *);
 void empty(char *, int);
 void getImageLinks(); // DEPRECATED
