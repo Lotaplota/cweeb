@@ -21,6 +21,7 @@ typedef struct {
 Queue * CreateQueue(int);
 Link * CreateLink(char * url);
 void AddLink(Queue * q, Link * l);
+Link * getLinkByIndex(Queue * queue, int position);
 void printQueue(Queue *);
 // QUEUE FUNCTIONS ----
 

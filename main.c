@@ -17,13 +17,16 @@ int main(void)
     // Displaying the chapters to the user
     displayQueueOptions(links);
     
-    /* ---- CHANGE IT TO QUEUE STRUCTURE
     // Getting the user's choice for the chapter number and building the url from it
+    // TODO: turn this into a single function getUserInput, with input checks and basic safekeeping
     char input = getUserInput("Input the option's number: ");
-    int choice = input - '0';
-    char choiceUrl[MAX_LINK_SIZE];
-    sprintf(choiceUrl, "%s%s", "https://tcbonepiecechapters.com/chapters", chapterLinks[choice]);
+    Link * chosenLink = getLinkByIndex(links, input - '0');
+
+    char chapterUrl[MAX_LINK_SIZE];
+    sprintf(chapterUrl, "%s%s", "https://tcbonepiecechapters.com/chapters", chosenLink->Url);
+    printf("chosen chapter url: %s\n", chapterUrl); // DONKEY
     
+    /* ---- CHANGE IT TO QUEUE STRUCTURE
     // Using the built URL to get the chapter's HTML data
     getHtmlData(choiceUrl, "chapter-page.txt");
 

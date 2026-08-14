@@ -43,6 +43,23 @@ void AddLink(Queue * q, Link * l) {
     q->Size++;
 }
 
+// Runs through the links in a queue and returns the link in the position chosen
+Link * getLinkByIndex(Queue * q, int position)
+{
+    // TODO: check for numeric input
+    if (position > q->Size || position < 0) { perror("Number out of the list's range"); return NULL; }
+
+    Link * l = q->Start;
+
+    for (int i = 1; i < position; i++)
+    {
+        if (!l->Next) break;
+        l = l->Next;
+    }
+
+    return l;
+}
+
 void printQueue(Queue * q)
 {
     if (q->Start == NULL) { perror("Queue is empty"); return; }
@@ -178,7 +195,7 @@ void displayQueueOptions(Queue * q)
     printf("---- Chapter Options ----\n\n");
 
     Link * cur = q->Start;
-    int i = 0;
+    int i = 1;
     while(cur != NULL)
     {
         printf("%i. %s\n", i, cur->Url);
@@ -191,12 +208,15 @@ void displayQueueOptions(Queue * q)
 
 char getUserInput(char * prompt)
 {
-    printf(prompt);
+    printf("%s", prompt); // Using printf(prompt) can lead to a bug
 
-    char input;
-    scanf("%c", &input);
+    char buffer[256];
+    if (fgets(buffer, sizeof(buffer), stdin) != NULL) {
+        char input;
+        if (sscanf(buffer, "%c", &input) == 1) return input;
+    }
 
-    return input;
+    return NULL;
 }
 
 void empty(char * a, int size)
