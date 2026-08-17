@@ -31,7 +31,7 @@ void AddLink(Queue * q, Link * l) {
     if (q->Size == q->Capacity) { perror("Queue is full"); return; }
     if (l == NULL) { perror("The link is null"); return; }
 
-    if (q->Start == NULL) { // CONTINUE is this working?
+    if (q->Start == NULL) {
         q->Start = l;
         q->End = l;
     }
@@ -219,7 +219,7 @@ char getUserInput(char * prompt)
     return NULL;
 }
 
-void empty(char * a, int size)
+void empty(char * a, int size) // i don't remember what was this function for...
 {
     memset(a, 0, size * (sizeof a[0]));
 }
@@ -277,5 +277,25 @@ void downloadImages(char * chapterUrl) // i should change this function a little
 
         system(command);
         pageNum++;
+    }
+}
+
+// Downloads the images from a link queue to a folder named /images/
+void downloadImagesFromQueue(Queue * q)
+{
+    system("mkdir images");
+    Link * cur = q->Start;
+
+    // Creating page counter to be appended to the filenames
+    int pageNum = 1;
+    char buff[1024] = "";
+    
+    while (cur != NULL)
+    {
+        char command[64];
+        sprintf(command, "curl -o images/page%02i.png %s", pageNum, cur->Url);
+
+        system(command);
+        pageNum++; cur = cur->Next;
     }
 }

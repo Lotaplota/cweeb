@@ -26,12 +26,12 @@ int main(void)
     sprintf(chapterUrl, "%s%s", "https://tcbonepiecechapters.com/chapters", chosenLink->Url);
     printf("chosen chapter url: %s\n", chapterUrl); // DONKEY
     
-    /* ---- CHANGE IT TO QUEUE STRUCTURE
     // Using the built URL to get the chapter's HTML data
-    getHtmlData(choiceUrl, "chapter-page.txt");
+    getHtmlData(chapterUrl, "chapter-page.txt");
+    
+    Queue * imgs = CreateQueue(PAGE_QT);
+    extractLinkURLAndAppendToQueue("chapter-page.txt", imgs, "fixed-ratio-content\" src=\"", '\"');
+    printQueue(imgs); // DONKEY
 
-    // Creating an array to store the links to the chapter page's images
-    char imageLinks[PAGE_QT][MAX_LINK_SIZE];
-    populateLinkArray(imageLinks, PAGE_QT, "chapter-page.txt", "fixed-ratio-content\" src=\"");
-    CHANGE IT TO QUEUE STRUCTURE ---- */
+    downloadImagesFromQueue(imgs);
 }
