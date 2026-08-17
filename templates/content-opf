@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<package xmlns="http://www.idpf.org/2007/opf" version="3.0" unique-identifier="bookid">
+  <metadata xmlns:opf="http://www.idpf.org/2007/opf" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:dcterms="http://purl.org/dc/terms/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:calibre="http://calibre.kovidgoyal.net/2009/metadata">
+    <dc:language>$/LANGUAGE/$</dc:language>
+    <dc:title>$/TITLE/$</dc:title>
+    <dc:identifier opf:scheme="bookid">$/IDENTIFIER/$</dc:identifier>
+    <dc:description>$/DESCRIPTION/$</dc:description>
+    <dc:publisher>$/PUBLISHER/$</dc:publisher>
+    <dc:subject>$/SUBJECT/$</dc:subject>
+    <meta property="dcterms:modified">2026-08-17T00:00:00Z</meta>
+    <meta name="cover" content="cover"/>
+  </metadata>
+  $/<MANIFEST>/$
+  $/<SPINE>/$
+  <guide>
+    <reference type="cover" href="text/page01.xhtml" title="Cover"/>
+  </guide>
+</package>
