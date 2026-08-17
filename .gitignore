@@ -60,3 +60,5 @@ dkms.conf
 
 # vscode configs
 *.vscode/
+
+/epub-folder

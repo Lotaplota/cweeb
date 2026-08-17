@@ -13,7 +13,6 @@ Queue * CreateQueue(int capacity) {
     q->Size = 0;
 
     return q;
-    printf("create queue worked\n"); // DONKEY
 }
 
 Link * CreateLink(char * url) {
@@ -32,7 +31,7 @@ void AddLink(Queue * q, Link * l) {
     if (q->Size == q->Capacity) { perror("Queue is full"); return; }
     if (l == NULL) { perror("The link is null"); return; }
 
-    if (q->Start == NULL) { // CONTINUE is this working?
+    if (q->Start == NULL) {
         q->Start = l;
         q->End = l;
     }
@@ -44,11 +43,28 @@ void AddLink(Queue * q, Link * l) {
     q->Size++;
 }
 
+// Runs through the links in a queue and returns the link in the position chosen
+Link * getLinkByIndex(Queue * q, int position)
+{
+    // TODO: check for numeric input
+    if (position > q->Size || position < 0) { perror("Number out of the list's range"); return NULL; }
+
+    Link * l = q->Start;
+
+    for (int i = 1; i < position; i++)
+    {
+        if (!l->Next) break;
+        l = l->Next;
+    }
+
+    return l;
+}
+
 void printQueue(Queue * q)
 {
     if (q->Start == NULL) { perror("Queue is empty"); return; }
 
-    printf("---- Queue of capacity %i, currently with %i links:\n", q->Capacity, q->Size);
+    printf("\n---- Queue of capacity %i, currently with %i links:\n", q->Capacity, q->Size);
 
     Link * cur = q->Start;
     while(cur != NULL)
@@ -70,46 +86,7 @@ void getHtmlData(char * url, char * filename)
     system(command);
 }
 
-int extractLink(FILE * file, char * dst, int dst_size, char * initiator, char terminator)
-{
-    if (!file)
-    {
-        printf("No html data to read from!\n");
-        return 1;
-    }
-
-    char line[1024];
-
-    while (fgets(line, sizeof(line), file) != NULL)
-    {
-        char * start = NULL; char * end = NULL;
-        
-        // Finding the position of the substring
-        start = strstr(line, initiator);
-        
-        // If the initiator is found, searches for the terminator
-        if (start)
-        {
-            start += strlen(initiator);
-
-            end = strchr(start, terminator);
-            
-            // If the terminator is found, changes it to a \0 and copies the string to the destination
-            if (end)
-            {
-                *end = '\0';
-                
-                // Copying the full link to the destination
-                strncpy(dst, start, dst_size - 1);
-                dst[dst_size - 1] = '\0';
-            }
-
-            return 0;
-        }
-    }
-}
-
-int extractLinkURLAndAppendToQueue(char * filename, Queue * q, char * initiator, char terminator)
+int extractLinks(char * filename, Queue * q, char * initiator, char terminator)
 {
     FILE * file = fopen(filename, "r");
 
@@ -118,10 +95,8 @@ int extractLinkURLAndAppendToQueue(char * filename, Queue * q, char * initiator,
         printf("No html data to read from!\n");
         return 1;
     }
-    printf("read the file\n"); // DONKEY
 
     char line[1024];
-    printf("created the line buffer\n"); // DONKEY
 
     while (fgets(line, sizeof(line), file) != NULL)
     {
@@ -133,7 +108,6 @@ int extractLinkURLAndAppendToQueue(char * filename, Queue * q, char * initiator,
         // If the initiator is found, searches for the terminator
         if (start)
         {
-            printf("loop started\n"); // DONKEY
             start += strlen(initiator);
 
             end = strchr(start, terminator);
@@ -141,12 +115,9 @@ int extractLinkURLAndAppendToQueue(char * filename, Queue * q, char * initiator,
             // If the terminator is found, changes it to a \0 and creates a link in the end of the queue
             if (end)
             {
-                printf("terminator was found\n"); // DONKEY
                 *end = '\0';
                 
                 // Adding a new link to the queue
-                printf("will add link\n"); // DONKEY
-                printf("link: %s\n", start); // DONKEY
                 AddLink(q, CreateLink(start));
 
                 if (q->Capacity == q->Size) { return 0;}
@@ -155,25 +126,19 @@ int extractLinkURLAndAppendToQueue(char * filename, Queue * q, char * initiator,
     }
 }
 
-
-int populateLinkArray(char arr[][MAX_LINK_SIZE], int lineAmount, char * filename, char * initiator)
+void displayOptions(Queue * q)
 {
-    FILE * pageData = fopen(filename, "r");
+    if (q->Start == NULL) { perror("Queue is empty"); return; }
 
-    for (int i = 0; i < lineAmount; i++)
-    {
-        extractLink(pageData, arr[i], MAX_LINK_SIZE, initiator, '\"');
-    }
-
-    fclose(pageData);
-}
-
-void displayOptions(char arr[CHAPTER_QT][MAX_LINK_SIZE])
-{
     printf("---- Chapter Options ----\n\n");
-    for (int i = 0; i < CHAPTER_QT; i++)
+
+    Link * cur = q->Start;
+    int i = 1;
+    while(cur != NULL)
     {
-        printf("%i. %s\n", i, arr[i]);
+        printf("%i. %s\n", i, cur->Url);
+        cur = cur->Next;
+        i++;
     }
 
     printf("\n");
@@ -181,71 +146,38 @@ void displayOptions(char arr[CHAPTER_QT][MAX_LINK_SIZE])
 
 char getUserInput(char * prompt)
 {
-    printf(prompt);
+    printf("%s", prompt); // Using printf(prompt) can lead to a bug
 
-    char input;
-    scanf("%c", &input);
+    char buffer[256];
+    if (fgets(buffer, sizeof(buffer), stdin) != NULL) {
+        char input;
+        if (sscanf(buffer, "%c", &input) == 1) return input;
+    }
 
-    return input;
+    return NULL;
 }
 
-void empty(char * a, int size)
+void empty(char * a, int size) // i don't remember what was this function for...
 {
     memset(a, 0, size * (sizeof a[0]));
 }
 
-void getImageLinks() // DEPRECATED
-{
-    FILE * html = fopen("content.txt", "r");
-    FILE * links = fopen("links.txt", "w");
-
-    char line[1024];
-    char select[1024];
-
-    while (fgets(line, sizeof(line), html) != NULL)
-    {
-        // Finding the position of the substring
-        char * pos = strstr(line, "ratio-content\" src=\"");
-
-        if (pos != NULL)
-        {
-            // Should start printing from the i-th character
-            // i should be the length of the initiator substring minus 1 for the \0
-            int i = sizeof("ratio-content\" src=\"") - 1; int j = 0;
-
-            // Prints while the current character is not the chosen terminator
-            while (pos[i] != '\"')
-            {
-                select[j] = pos[i];
-                i++; j++;
-            }
-
-            // Saving the extracted link found to the file
-            fprintf(links,"%s\n", select);
-        }
-
-        // Emptying the array for the next link
-        empty(select, 1024);
-    }
-
-    fclose(html); fclose(links);
-}
-
-void downloadImages(char * chapterUrl) // i should change this function a little bit. make it a loop that scans through the links array and download the images
+// Downloads the images from a link queue to a folder named /images/
+void downloadImages(Queue * q)
 {
     system("mkdir images");
-    FILE * links = fopen("links.txt", "r");
+    Link * cur = q->Start;
 
     // Creating page counter to be appended to the filenames
     int pageNum = 1;
     char buff[1024] = "";
     
-    while (fgets(buff, sizeof(buff), links) != NULL)
+    while (cur != NULL)
     {
         char command[64];
-        sprintf(command, "curl -o images/page%02i.png %s", pageNum, buff);
+        sprintf(command, "curl -o images/page%02i.png %s", pageNum, cur->Url);
 
         system(command);
-        pageNum++;
+        pageNum++; cur = cur->Next;
     }
 }

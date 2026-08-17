@@ -18,21 +18,20 @@ typedef struct {
 } Queue;
 
 // ---- QUEUE FUNCTIONS
-Queue * CreateQueue(int);
+Queue * CreateQueue(int capacity);
 Link * CreateLink(char * url);
 void AddLink(Queue * q, Link * l);
+Link * getLinkByIndex(Queue * queue, int position);
 void printQueue(Queue *);
-// QUEUE FUNCTIONS ----
+// ---- QUEUE FUNCTIONS
 
-
-void getHtmlData(char *, char *);
-int extractLink(FILE *, char *, int, char *, char);
-int populateLinkArray(char arr[][MAX_LINK_SIZE], int, char *, char *);
-int extractLinkURLAndAppendToQueue(char *, Queue *, char *, char);
-void displayOptions(char arr[CHAPTER_QT][MAX_LINK_SIZE]);
-char getUserInput(char *);
+// EXTRACTION / INPUT FUNCTIONS
+void getHtmlData(char * url, char * filename);
+int extractLinks(char * filename, Queue * queue, char * initiator, char terminator);
+void displayOptions(Queue * queue);
+char getUserInput(char * prompt);
 void empty(char *, int);
-void getImageLinks(); // DEPRECATED
-void downloadImages(char *); // i should change this function a little bit. make it a loop that scans through the links array and download the images;
+void downloadImages(Queue * queue);
+// EXTRACTION / INPUT FUNCTIONS
 
 #endif
