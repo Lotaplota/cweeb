@@ -11,11 +11,11 @@ int main(void)
     // QUEUE RESTRUCTURING
     Queue * links = CreateQueue(CHAPTER_QT);
 
-    extractLinkURLAndAppendToQueue("main-page.txt", links, "<a href=\"/chapters", '\"');
+    extractLinks("main-page.txt", links, "<a href=\"/chapters", '\"');
     printQueue(links); // DONKEY
 
     // Displaying the chapters to the user
-    displayQueueOptions(links);
+    displayOptions(links);
     
     // Getting the user's choice for the chapter number and building the url from it
     // TODO: turn this into a single function getUserInput, with input checks and basic safekeeping
@@ -30,8 +30,8 @@ int main(void)
     getHtmlData(chapterUrl, "chapter-page.txt");
     
     Queue * imgs = CreateQueue(PAGE_QT);
-    extractLinkURLAndAppendToQueue("chapter-page.txt", imgs, "fixed-ratio-content\" src=\"", '\"');
+    extractLinks("chapter-page.txt", imgs, "fixed-ratio-content\" src=\"", '\"');
     printQueue(imgs); // DONKEY
 
-    downloadImagesFromQueue(imgs);
+    downloadImages(imgs);
 }
